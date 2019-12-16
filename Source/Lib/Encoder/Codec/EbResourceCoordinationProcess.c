@@ -111,8 +111,15 @@ EbErrorType signal_derivation_pre_analysis_oq(
     picture_control_set_ptr->tf_enable_hme_level1_flag = tf_enable_hme_level1_flag[0][input_resolution][hme_me_level] || tf_enable_hme_level1_flag[1][input_resolution][hme_me_level];
     picture_control_set_ptr->tf_enable_hme_level2_flag = tf_enable_hme_level2_flag[0][input_resolution][hme_me_level] || tf_enable_hme_level2_flag[1][input_resolution][hme_me_level];
 
-    if (picture_control_set_ptr->enc_mode >= ENC_M8)
-        sequence_control_set_ptr->seq_header.enable_restoration = 0;
+    if (sequence_control_set_ptr->static_config.enable_restoration_filtering == DEFAULT) {
+        if (picture_control_set_ptr->enc_mode >= ENC_M8)
+            sequence_control_set_ptr->seq_header.enable_restoration = 0;
+        else
+            sequence_control_set_ptr->seq_header.enable_restoration = 1;
+    }
+    else
+        sequence_control_set_ptr->seq_header.enable_restoration = (uint8_t)sequence_control_set_ptr->static_config.enable_restoration_filtering;
+
     sequence_control_set_ptr->cdf_mode = (picture_control_set_ptr->enc_mode <= ENC_M6) ? 0 : 1;
     return return_error;
 }
@@ -692,6 +699,7 @@ void* resource_coordination_kernel(void *input_ptr)
                     ((sequence_control_set_ptr->static_config.encoder_bit_depth >= 8 && sequence_control_set_ptr->static_config.enc_mode == ENC_M0) ||
                     sequence_control_set_ptr->static_config.encoder_bit_depth == 8) ? EB_TRUE : EB_FALSE;
 
+            if (sequence_control_set_ptr->static_config.inter_intra_compound == DEFAULT) {
 #if II_COMP_FLAG
 #if INTER_INTRA_HBD
             // Set inter-intra mode      Settings
@@ -717,6 +725,9 @@ void* resource_coordination_kernel(void *input_ptr)
                                                                               (sequence_control_set_ptr->static_config.enc_mode == ENC_M0) ? 1 : 0;
 #endif
 #endif
+            } else
+                sequence_control_set_ptr->seq_header.enable_interintra_compound = sequence_control_set_ptr->static_config.inter_intra_compound;
+
 #if FILTER_INTRA_FLAG
             // Set filter intra mode      Settings
             // 0                 OFF
@@ -729,18 +740,23 @@ void* resource_coordination_kernel(void *input_ptr)
             // Set compound mode      Settings
             // 0                 OFF: No compond mode search : AVG only
             // 1                 ON: full
+            if (sequence_control_set_ptr->static_config.compound_level == DEFAULT) {
 #if INTER_INTER_HBD
 #if COMP_HBD
-            sequence_control_set_ptr->compound_mode = (sequence_control_set_ptr->static_config.enc_mode <= ENC_M4) ? 1 : 0;
+                sequence_control_set_ptr->compound_mode = (sequence_control_set_ptr->static_config.enc_mode <= ENC_M4) ? 1 : 0;
 #else
-            sequence_control_set_ptr->compound_mode = (sequence_control_set_ptr->static_config.encoder_bit_depth == EB_10BIT &&
-                                                       sequence_control_set_ptr->static_config.enable_hbd_mode_decision ) ? 0:
-                                                      (sequence_control_set_ptr->static_config.enc_mode <= ENC_M4) ? 1 : 0;
+                sequence_control_set_ptr->compound_mode = (sequence_control_set_ptr->static_config.encoder_bit_depth == EB_10BIT &&
+                                                           sequence_control_set_ptr->static_config.enable_hbd_mode_decision ) ? 0:
+                                                          (sequence_control_set_ptr->static_config.enc_mode <= ENC_M4) ? 1 : 0;
 #endif
 #else
-            sequence_control_set_ptr->compound_mode = sequence_control_set_ptr->static_config.encoder_bit_depth == EB_10BIT ? 0 :
-                (sequence_control_set_ptr->static_config.enc_mode <= ENC_M4) ? 1 : 0;
+                sequence_control_set_ptr->compound_mode = sequence_control_set_ptr->static_config.encoder_bit_depth == EB_10BIT ? 0 :
+                                                         (sequence_control_set_ptr->static_config.enc_mode <= ENC_M4) ? 1 : 0;
 #endif
+            }
+            else
+                sequence_control_set_ptr->compound_mode = sequence_control_set_ptr->static_config.compound_level;
+
             if (sequence_control_set_ptr->compound_mode)
             {
                 sequence_control_set_ptr->seq_header.order_hint_info.enable_jnt_comp = 1; //DISTANCE
@@ -892,13 +908,13 @@ void* resource_coordination_kernel(void *input_ptr)
                 if (picture_control_set_ptr->input_ptr->qp > MAX_QP_VALUE) {
                     SVT_LOG("SVT [WARNING]: INPUT QP OUTSIDE OF RANGE\n");
                     picture_control_set_ptr->qp_on_the_fly = EB_FALSE;
-                    picture_control_set_ptr->picture_qp = (uint8_t)sequence_control_set_ptr->qp;
+                    picture_control_set_ptr->picture_qp = (uint8_t)sequence_control_set_ptr->static_config.qp;
                 }
                 picture_control_set_ptr->picture_qp = (uint8_t)picture_control_set_ptr->input_ptr->qp;
             }
             else {
                 picture_control_set_ptr->qp_on_the_fly = EB_FALSE;
-                picture_control_set_ptr->picture_qp = (uint8_t)sequence_control_set_ptr->qp;
+                picture_control_set_ptr->picture_qp = (uint8_t)sequence_control_set_ptr->static_config.qp;
             }
 
             // Picture Stats

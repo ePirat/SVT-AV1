@@ -452,6 +452,9 @@ extern "C" {
         NeighborArrayUnit                  *ep_luma_dc_sign_level_coeff_neighbor_array;
         NeighborArrayUnit                  *ep_cr_dc_sign_level_coeff_neighbor_array;
         NeighborArrayUnit                  *ep_cb_dc_sign_level_coeff_neighbor_array;
+#if RATE_ESTIMATION_UPDATE
+        NeighborArrayUnit                  *ep_partition_context_neighbor_array;
+#endif
         // Entropy Coding Neighbor Arrays
         NeighborArrayUnit                  *mode_type_neighbor_array;
         NeighborArrayUnit                  *partition_context_neighbor_array;
@@ -863,7 +866,6 @@ extern "C" {
         Macroblock                           *av1x;
         int32_t                               film_grain_params_present; //todo (AN): Do we need this flag at picture level?
         aom_denoise_and_model_t              *denoise_and_model;
-        EbBool                                enable_in_loop_motion_estimation_flag;
         RestUnitSearchInfo                   *rusi_picture[3];//for 3 planes
         int8_t                                cdef_filter_mode;
         int32_t                               cdef_frame_strength;
@@ -938,6 +940,9 @@ extern "C" {
 #if GM_OPT
         uint8_t                                gm_level;
 #endif
+#if TX_SIZE_EARLY_EXIT
+        uint8_t                                tx_size_early_exit;
+#endif
     } PictureParentControlSet;
 
     typedef struct PictureControlSetInitData
@@ -967,7 +972,6 @@ extern "C" {
         uint8_t                            hbd_mode_decision;
         uint16_t                           film_grain_noise_level;
         EbBool                             ext_block_flag;
-        EbBool                             in_loop_me_flag;
         uint8_t                            mrp_mode;
         uint8_t                            cdf_mode;
         uint8_t                            nsq_present;

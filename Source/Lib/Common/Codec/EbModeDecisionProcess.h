@@ -250,8 +250,6 @@ extern "C" {
         uint8_t                         parent_sq_pred_mode[MAX_PARENT_SQ];
         uint8_t                         chroma_level;
         PART                            nsq_table[NSQ_TAB_SIZE];
-        uint8_t                         decoupled_fast_loop_search_method;
-        uint8_t                         decouple_intra_inter_fast_loop;
         uint8_t                         full_loop_escape;
         uint8_t                         global_mv_injection;
         uint8_t                         nx4_4xn_parent_mv_injection;
@@ -358,8 +356,15 @@ extern "C" {
     uint64_t                            md_stage_2_class_prune_th;
 #endif
 #if OBMC_FLAG
+#if HBD2_OBMC
+    DECLARE_ALIGNED(16, uint8_t, obmc_buff_0[2* 2 * MAX_MB_PLANE * MAX_SB_SQUARE]);
+    DECLARE_ALIGNED(16, uint8_t, obmc_buff_1[2* 2 * MAX_MB_PLANE * MAX_SB_SQUARE]);
+    DECLARE_ALIGNED(16, uint8_t, obmc_buff_0_8b[2 * MAX_MB_PLANE * MAX_SB_SQUARE]);
+    DECLARE_ALIGNED(16, uint8_t, obmc_buff_1_8b[2 * MAX_MB_PLANE * MAX_SB_SQUARE]);
+#else
     DECLARE_ALIGNED(16, uint8_t, obmc_buff_0[2 * MAX_MB_PLANE * MAX_SB_SQUARE]);
     DECLARE_ALIGNED(16, uint8_t, obmc_buff_1[2 * MAX_MB_PLANE * MAX_SB_SQUARE]);
+#endif
     DECLARE_ALIGNED(16, int32_t, wsrc_buf[MAX_SB_SQUARE]);
     DECLARE_ALIGNED(16, int32_t, mask_buf[MAX_SB_SQUARE]);
     unsigned int pred_sse[REF_FRAMES];

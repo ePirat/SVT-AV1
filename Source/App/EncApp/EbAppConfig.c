@@ -61,14 +61,32 @@
 #define LEVEL_TOKEN                     "-level"
 #define LATENCY_MODE                    "-latency-mode" // no Eval
 #define FILM_GRAIN_TOKEN                "-film-grain"
-#define INTERLACED_VIDEO_TOKEN          "-interlaced-video"
-#define SEPERATE_FILDS_TOKEN            "-separate-fields"
 #define INTRA_REFRESH_TYPE_TOKEN        "-irefresh-type" // no Eval
 #define LOOP_FILTER_DISABLE_TOKEN       "-dlf"
+#define RESTORATION_ENABLE_TOKEN        "-restoration-filtering"
+#define CLASS_12_TOKEN                  "-class-12"
+#define EDGE_SKIP_ANGLE_INTRA_TOKEN     "-intra-edge-skp"
+#define INTER_INTRA_COMPOUND_TOKEN      "-interintra-comp"
+#define FRAC_SEARCH_64_TOKEN            "-frac-search-64"
+#define MFMV_ENABLE_TOKEN               "-mfmv"
+#define REDUNDANT_BLK_TOKEN             "-redundant-blk"
+#define TRELLIS_ENABLE_TOKEN            "-trellis"
+#define SPATIAL_SSE_FL_TOKEN            "-spatial-sse-fl"
+#define SUBPEL_TOKEN                    "-subpel"
+#define OVR_BNDRY_BLK_TOKEN             "-over-bndry-blk"
+#define NEW_NEAREST_COMB_INJECT_TOKEN   "-new-nrst-near-comb"
+#define NX4_4XN_MV_INJECT_TOKEN         "-nx4-4xn-mv-inject"
+#define PRUNE_UNIPRED_ME_TOKEN          "-prune-unipred-me"
+#define PRUNE_REF_REC_PART_TOKEN        "-prune-ref-rec-part"
+#define NSQ_TABLE_TOKEN                 "-nsq-table-use"
+#define FRAME_END_CDF_UPDATE_TOKEN      "-framend-cdf-upd-mode"
 #define LOCAL_WARPED_ENABLE_TOKEN       "-local-warp"
 #define GLOBAL_MOTION_ENABLE_TOKEN      "-global-motion"
 #define OBMC_TOKEN                      "-obmc"
 #define RDOQ_TOKEN                      "-rdoq"
+#define PRED_ME_TOKEN                   "-pred-me"
+#define BIPRED_3x3_TOKEN                "-bipred-3x3"
+#define COMPOUND_LEVEL_TOKEN            "-compound"
 #define FILTER_INTRA_TOKEN              "-filter-intra"
 #define USE_DEFAULT_ME_HME_TOKEN        "-use-default-me-hme"
 #define HME_ENABLE_TOKEN                "-hme"
@@ -76,7 +94,6 @@
 #define HME_L1_ENABLE_TOKEN             "-hme-l1"
 #define HME_L2_ENABLE_TOKEN             "-hme-l2"
 #define EXT_BLOCK                       "-ext-block"
-#define IN_LOOP_ME                      "-in-loop-me"
 #define SEARCH_AREA_WIDTH_TOKEN         "-search-w"
 #define SEARCH_AREA_HEIGHT_TOKEN        "-search-h"
 #define NUM_HME_SEARCH_WIDTH_TOKEN      "-num-hme-w"
@@ -113,6 +130,7 @@
 
 #define SQ_WEIGHT_TOKEN                 "-sqw"
 #define ENABLE_AMP_TOKEN                "-enable-amp"
+#define CHROMA_MODE_TOKEN               "-chroma-mode"
 
 #define SCENE_CHANGE_DETECTION_TOKEN    "-scd"
 #define INJECTOR_TOKEN                  "-inj"  // no Eval
@@ -219,11 +237,9 @@ static void SetCfgStatFile(const char *value, EbConfig *cfg)
 };
 static void SetStatReport                       (const char *value, EbConfig *cfg) {cfg->stat_report = (uint8_t) strtoul(value, NULL, 0);};
 static void SetCfgSourceWidth                   (const char *value, EbConfig *cfg) {cfg->source_width = strtoul(value, NULL, 0);};
-static void SetInterlacedVideo                  (const char *value, EbConfig *cfg) {cfg->interlaced_video  = (EbBool) strtoul(value, NULL, 0);};
-static void SetSeperateFields                   (const char *value, EbConfig *cfg) {cfg->separate_fields = (EbBool) strtoul(value, NULL, 0);};
-static void SetCfgSourceHeight                  (const char *value, EbConfig *cfg) {cfg->source_height = strtoul(value, NULL, 0) >> cfg->separate_fields;};
-static void SetCfgFramesToBeEncoded             (const char *value, EbConfig *cfg) {cfg->frames_to_be_encoded = strtol(value,  NULL, 0) << cfg->separate_fields;};
-static void SetBufferedInput                    (const char *value, EbConfig *cfg) {cfg->buffered_input = (strtol(value, NULL, 0) != -1 && cfg->separate_fields) ? strtol(value, NULL, 0) << cfg->separate_fields : strtol(value, NULL, 0);};
+static void SetCfgSourceHeight                  (const char *value, EbConfig *cfg) { cfg->source_height = strtoul(value, NULL, 0); };
+static void SetCfgFramesToBeEncoded             (const char *value, EbConfig *cfg) { cfg->frames_to_be_encoded = strtol(value, NULL, 0); };
+static void SetBufferedInput                    (const char *value, EbConfig *cfg) {cfg->buffered_input = strtol(value, NULL, 0);};
 static void SetFrameRate                        (const char *value, EbConfig *cfg) {
     cfg->frame_rate = strtoul(value, NULL, 0);
     if (cfg->frame_rate > 1000 )
@@ -249,15 +265,34 @@ static void SetCfgFilmGrain                     (const char *value, EbConfig *cf
 static void SetDisableDlfFlag                   (const char *value, EbConfig *cfg) {cfg->disable_dlf_flag = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableLocalWarpedMotionFlag      (const char *value, EbConfig *cfg) {cfg->enable_warped_motion = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableGlobalMotionFlag           (const char *value, EbConfig *cfg) {cfg->enable_global_motion = (EbBool)strtoul(value, NULL, 0);};
+static void SetEnableRestorationFilterFlag      (const char *value, EbConfig *cfg) {cfg->enable_restoration_filtering = strtol(value, NULL, 0);};
+static void SetClass12Flag                      (const char *value, EbConfig *cfg) {cfg->combine_class_12 = strtol(value, NULL, 0);};
+static void SetEdgeSkipAngleIntraFlag           (const char *value, EbConfig *cfg) {cfg->edge_skp_angle_intra = strtol(value, NULL, 0);};
+static void SetInterIntraCompoundFlag           (const char *value, EbConfig *cfg) {cfg->inter_intra_compound = strtol(value, NULL, 0);};
+static void SetFractionalSearch64Flag           (const char *value, EbConfig *cfg) {cfg->fract_search_64 = strtol(value, NULL, 0);};
+static void SetEnableMfmvFlag                   (const char *value, EbConfig *cfg) {cfg->enable_mfmv = strtol(value, NULL, 0);};
+static void SetEnableRedundantBlkFlag           (const char *value, EbConfig *cfg) {cfg->enable_redundant_blk = strtol(value, NULL, 0);};
+static void SetEnableTrellisFlag                (const char *value, EbConfig *cfg) {cfg->enable_trellis = strtol(value, NULL, 0);};
+static void SetSpatialSseFlFlag                 (const char *value, EbConfig *cfg) {cfg->spatial_sse_fl = strtol(value, NULL, 0);};
+static void SetEnableSubpelFlag                 (const char *value, EbConfig *cfg) {cfg->enable_subpel = strtol(value, NULL, 0);};
+static void SetOverBndryBlkFlag                 (const char *value, EbConfig *cfg) {cfg->over_bndry_blk = strtol(value, NULL, 0);};
+static void SetNewNearestCombInjectFlag         (const char *value, EbConfig *cfg) {cfg->new_nearest_comb_inject = strtol(value, NULL, 0);};
+static void SetNx4_4xnParentMvInjectFlag        (const char *value, EbConfig *cfg) {cfg->nx4_4xn_parent_mv_inject = strtol(value, NULL, 0);};
+static void SetPruneUnipredMeFlag               (const char *value, EbConfig *cfg) {cfg->prune_unipred_me = strtol(value, NULL, 0);};
+static void SetPruneRefRecPartFlag              (const char *value, EbConfig *cfg) {cfg->prune_ref_rec_part = strtol(value, NULL, 0);};
+static void SetNsqTableFlag                     (const char *value, EbConfig *cfg) {cfg->nsq_table = strtol(value, NULL, 0);};
+static void SetFrameEndCdfUpdateFlag            (const char *value, EbConfig *cfg) {cfg->frame_end_cdf_update = strtol(value, NULL, 0);};
+static void SetChromaMode                       (const char *value, EbConfig *cfg) {cfg->set_chroma_mode = strtol(value, NULL, 0);};
 static void SetEnableObmcFlag                   (const char *value, EbConfig *cfg) {cfg->enable_obmc = (EbBool)strtoul(value, NULL, 0);};
-static void SetEnableRdoqFlag                   (const char *value, EbConfig *cfg) {cfg->enable_rdoq = (int8_t)strtol(value, NULL, 0);};
-
+static void SetEnableRdoqFlag                   (const char *value, EbConfig *cfg) {cfg->enable_rdoq = strtol(value, NULL, 0);};
+static void SetPredictiveMeFlag                 (const char *value, EbConfig *cfg) {cfg->pred_me = strtol(value, NULL, 0); };
+static void SetBipred3x3injectFlag              (const char *value, EbConfig *cfg) {cfg->bipred_3x3_inject = strtol(value, NULL, 0); };
+static void SetCompoundLevelFlag                (const char *value, EbConfig *cfg) {cfg->compound_level = strtol(value, NULL, 0); };
 static void SetEnableFilterIntraFlag            (const char *value, EbConfig *cfg) {cfg->enable_filter_intra = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableHmeFlag                    (const char *value, EbConfig *cfg) {cfg->enable_hme_flag = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableHmeLevel0Flag              (const char *value, EbConfig *cfg) {cfg->enable_hme_level0_flag = (EbBool)strtoul(value, NULL, 0);};
 static void SetTileRow                          (const char *value, EbConfig *cfg) { cfg->tile_rows = strtoul(value, NULL, 0); };
 static void SetTileCol                          (const char *value, EbConfig *cfg) { cfg->tile_columns = strtoul(value, NULL, 0); };
-
 static void SetSceneChangeDetection             (const char *value, EbConfig *cfg) {cfg->scene_change_detection = strtoul(value, NULL, 0);};
 static void SetLookAheadDistance                (const char *value, EbConfig *cfg) {cfg->look_ahead_distance = strtoul(value, NULL, 0);};
 static void SetRateControlMode                  (const char *value, EbConfig *cfg) {cfg->rate_control_mode = strtoul(value, NULL, 0);};
@@ -275,7 +310,6 @@ static void SetCfgHmeLevel0TotalSearchAreaWidth (const char *value, EbConfig *cf
 static void SetCfgHmeLevel0TotalSearchAreaHeight(const char *value, EbConfig *cfg) {cfg->hme_level0_total_search_area_height = strtoul(value, NULL, 0);};
 static void SetCfgUseDefaultMeHme               (const char *value, EbConfig *cfg) {cfg->use_default_me_hme = (EbBool)strtol(value, NULL, 0); };
 static void SetEnableExtBlockFlag(const char *value, EbConfig *cfg) { cfg->ext_block_flag = (EbBool)strtoul(value, NULL, 0); };
-static void SetEnableInLoopMeFlag(const char *value, EbConfig *cfg) { cfg->in_loop_me_flag = (EbBool)strtoul(value, NULL, 0); };
 static void SetHmeLevel0SearchAreaInWidthArray  (const char *value, EbConfig *cfg) {cfg->hme_level0_search_area_in_width_array[cfg->hme_level0_column_index++] = strtoul(value, NULL, 0);};
 static void SetHmeLevel0SearchAreaInHeightArray (const char *value, EbConfig *cfg) {cfg->hme_level0_search_area_in_height_array[cfg->hme_level0_row_index++] = strtoul(value, NULL, 0);};
 static void SetHmeLevel1SearchAreaInWidthArray  (const char *value, EbConfig *cfg) {cfg->hme_level1_search_area_in_width_array[cfg->hme_level1_column_index++] = strtoul(value, NULL, 0);};
@@ -405,10 +439,6 @@ config_entry_t config_entry[] = {
     { SINGLE_INPUT, INPUT_STAT_FILE_TOKEN, "input_stat_file", set_input_stat_file },
     { SINGLE_INPUT, OUTPUT_STAT_FILE_TOKEN, "output_stat_file", set_output_stat_file },
 #endif
-
-    // Interlaced Video
-    { SINGLE_INPUT, INTERLACED_VIDEO_TOKEN , "InterlacedVideo" , SetInterlacedVideo },
-    { SINGLE_INPUT, SEPERATE_FILDS_TOKEN, "SeperateFields", SetSeperateFields },
     // Picture Dimensions
     { SINGLE_INPUT, WIDTH_TOKEN, "SourceWidth", SetCfgSourceWidth },
     { SINGLE_INPUT, HEIGHT_TOKEN, "SourceHeight", SetCfgSourceHeight },
@@ -446,16 +476,55 @@ config_entry_t config_entry[] = {
 
     // DLF
     { SINGLE_INPUT, LOOP_FILTER_DISABLE_TOKEN, "LoopFilterDisable", SetDisableDlfFlag },
+
+    // RESTORATION
+    { SINGLE_INPUT, RESTORATION_ENABLE_TOKEN, "RestorationFilter", SetEnableRestorationFilterFlag },
+
+    { SINGLE_INPUT, MFMV_ENABLE_TOKEN             , "Mfmv", SetEnableMfmvFlag           },
+    { SINGLE_INPUT, REDUNDANT_BLK_TOKEN           , "RedundantBlock", SetEnableRedundantBlkFlag   },
+    { SINGLE_INPUT, TRELLIS_ENABLE_TOKEN          , "Trellis", SetEnableTrellisFlag        },
+    { SINGLE_INPUT, SPATIAL_SSE_FL_TOKEN          , "SpatialSSEfl", SetSpatialSseFlFlag         },
+    { SINGLE_INPUT, SUBPEL_TOKEN                  , "Subpel", SetEnableSubpelFlag         },
+    { SINGLE_INPUT, OVR_BNDRY_BLK_TOKEN           , "OverBoundryBlock", SetOverBndryBlkFlag         },
+    { SINGLE_INPUT, NEW_NEAREST_COMB_INJECT_TOKEN , "NewNearestCombInjection", SetNewNearestCombInjectFlag },
+    { SINGLE_INPUT, NX4_4XN_MV_INJECT_TOKEN       , "nx4ParentMvInjection", SetNx4_4xnParentMvInjectFlag},
+    { SINGLE_INPUT, PRUNE_UNIPRED_ME_TOKEN        , "PruneUnipredMe", SetPruneUnipredMeFlag       },
+    { SINGLE_INPUT, PRUNE_REF_REC_PART_TOKEN      , "PruneRefRecPart", SetPruneRefRecPartFlag      },
+    { SINGLE_INPUT, NSQ_TABLE_TOKEN               , "NsqTable", SetNsqTableFlag             },
+    { SINGLE_INPUT, FRAME_END_CDF_UPDATE_TOKEN    , "FrameEndCdfUpdate", SetFrameEndCdfUpdateFlag    },
+
+    // CHROMA
+    { SINGLE_INPUT, CHROMA_MODE_TOKEN, "ChromaMode", SetChromaMode },
+
     // LOCAL WARPED MOTION
     { SINGLE_INPUT, LOCAL_WARPED_ENABLE_TOKEN, "LocalWarpedMotion", SetEnableLocalWarpedMotionFlag },
     // GLOBAL MOTION
     { SINGLE_INPUT, GLOBAL_MOTION_ENABLE_TOKEN, "GlobalMotion", SetEnableGlobalMotionFlag },
+
+    // CLASS 12
+    { SINGLE_INPUT, CLASS_12_TOKEN, "CombineClass12", SetClass12Flag },
+    // EDGE SKIP ANGLE INTRA
+    { SINGLE_INPUT, EDGE_SKIP_ANGLE_INTRA_TOKEN, "EdgeSkipAngleIntra", SetEdgeSkipAngleIntraFlag },
+    // INTER INTRA COMPOUND
+    { SINGLE_INPUT, INTER_INTRA_COMPOUND_TOKEN, "InterIntraCompound", SetInterIntraCompoundFlag },
+    // FRACTIONAL SEARCH 64x64
+    { SINGLE_INPUT, FRAC_SEARCH_64_TOKEN, "FractionalSearch64", SetFractionalSearch64Flag },
+
     // OBMC
     { SINGLE_INPUT, OBMC_TOKEN, "Obmc", SetEnableObmcFlag },
     // RDOQ
     { SINGLE_INPUT, RDOQ_TOKEN, "RDOQ", SetEnableRdoqFlag },
+
     // Filter Intra
     { SINGLE_INPUT, FILTER_INTRA_TOKEN, "FilterIntra", SetEnableFilterIntraFlag },
+
+    // PREDICTIVE ME
+    { SINGLE_INPUT, PRED_ME_TOKEN, "PredMe", SetPredictiveMeFlag },
+    // BIPRED 3x3 INJECTION
+    { SINGLE_INPUT, BIPRED_3x3_TOKEN, "Bipred3x3", SetBipred3x3injectFlag },
+    // COMPOUND MODE
+    { SINGLE_INPUT, COMPOUND_LEVEL_TOKEN, "CompoundLevel", SetCompoundLevelFlag },
+
     // ME Tools
     { SINGLE_INPUT, USE_DEFAULT_ME_HME_TOKEN, "UseDefaultMeHme", SetCfgUseDefaultMeHme },
     { SINGLE_INPUT, HME_ENABLE_TOKEN, "HME", SetEnableHmeFlag },
@@ -463,7 +532,6 @@ config_entry_t config_entry[] = {
     { SINGLE_INPUT, HME_L1_ENABLE_TOKEN, "HMELevel1", SetEnableHmeLevel1Flag },
     { SINGLE_INPUT, HME_L2_ENABLE_TOKEN, "HMELevel2", SetEnableHmeLevel2Flag },
     { SINGLE_INPUT, EXT_BLOCK, "ExtBlockFlag", SetEnableExtBlockFlag },
-    { SINGLE_INPUT, IN_LOOP_ME, "InLoopMeFlag", SetEnableInLoopMeFlag },
     // ME Parameters
     { SINGLE_INPUT, SEARCH_AREA_WIDTH_TOKEN, "SearchAreaWidth", SetCfgSearchAreaWidth },
     { SINGLE_INPUT, SEARCH_AREA_HEIGHT_TOKEN, "SearchAreaHeight", SetCfgSearchAreaHeight },
@@ -553,10 +621,30 @@ void eb_config_ctor(EbConfig *config_ptr)
     config_ptr->hierarchical_levels                   = 4;
     config_ptr->pred_structure                        = 2;
     config_ptr->enable_global_motion                 = EB_TRUE;
+    config_ptr->enable_restoration_filtering         = DEFAULT;
+    config_ptr->combine_class_12                     = DEFAULT;
+    config_ptr->edge_skp_angle_intra                 = DEFAULT;
+    config_ptr->inter_intra_compound                 = DEFAULT;
+    config_ptr->fract_search_64                      = DEFAULT;
+    config_ptr->enable_mfmv                          = DEFAULT;
+    config_ptr->enable_redundant_blk                 = DEFAULT;
+    config_ptr->enable_trellis                       = DEFAULT;
+    config_ptr->spatial_sse_fl                       = DEFAULT;
+    config_ptr->enable_subpel                        = DEFAULT;
+    config_ptr->over_bndry_blk                       = DEFAULT;
+    config_ptr->new_nearest_comb_inject              = DEFAULT;
+    config_ptr->nx4_4xn_parent_mv_inject             = DEFAULT;
+    config_ptr->prune_unipred_me                     = DEFAULT;
+    config_ptr->prune_ref_rec_part                   = DEFAULT;
+    config_ptr->nsq_table                            = DEFAULT;
+    config_ptr->frame_end_cdf_update                 = DEFAULT;
+    config_ptr->set_chroma_mode                      = DEFAULT;
     config_ptr->enable_obmc                          = EB_TRUE;
-    config_ptr->enable_rdoq                          = -1;
+    config_ptr->enable_rdoq                          = DEFAULT;
+    config_ptr->pred_me                              = DEFAULT;
+    config_ptr->bipred_3x3_inject                    = DEFAULT;
+    config_ptr->compound_level                       = DEFAULT;
     config_ptr->enable_filter_intra                  = EB_TRUE;
-    config_ptr->in_loop_me_flag                      = EB_TRUE;
     config_ptr->use_default_me_hme                   = EB_TRUE;
     config_ptr->enable_hme_flag                        = EB_TRUE;
     config_ptr->enable_hme_level0_flag                  = EB_TRUE;
@@ -579,7 +667,7 @@ void eb_config_ctor(EbConfig *config_ptr)
     config_ptr->hme_level2_search_area_in_height_array[0]  = 1;
     config_ptr->hme_level2_search_area_in_height_array[1]  = 1;
     config_ptr->screen_content_mode                  = 2;
-    config_ptr->enable_hbd_mode_decision             = 1;
+    config_ptr->enable_hbd_mode_decision             = 2;
     config_ptr->enable_palette                       = -1;
     config_ptr->olpd_refinement                      = -1;
     config_ptr->injector_frame_rate                    = 60 << 16;
@@ -894,16 +982,6 @@ static EbErrorType VerifySettings(EbConfig *config, uint32_t channelNumber)
         fprintf(config->error_log_file, "Error instance %u: Could not find QP file, UseQpFile is set to 1\n", channelNumber + 1);
         return_error = EB_ErrorBadParameter;
     }
-    if (config->separate_fields > 1) {
-        fprintf(config->error_log_file, "Error Instance %u: Invalid SeperateFields Input\n", channelNumber + 1);
-        return_error = EB_ErrorBadParameter;
-    }
-
-    if (config->encoder_bit_depth == 10 && config->separate_fields == 1)
-    {
-        fprintf(config->error_log_file, "Error instance %u: Separate fields is not supported for 10 bit input \n", channelNumber + 1);
-        return_error = EB_ErrorBadParameter;
-    }
 
     if (config->encoder_color_format != 1) {
         fprintf(config->error_log_file, "Error instance %u: Only support 420 now \n", channelNumber + 1);
@@ -929,38 +1007,6 @@ static EbErrorType VerifySettings(EbConfig *config, uint32_t channelNumber)
         fprintf(config->error_log_file, "Error instance %u: Invalid target_socket [-1 - 1], your input: %d\n", channelNumber + 1, config->target_socket);
         return_error = EB_ErrorBadParameter;
     }
-
-    // Local Warped Motion
-    if (config->enable_warped_motion != 0 && config->enable_warped_motion != 1) {
-        fprintf(config->error_log_file, "Error instance %u: Invalid warped motion flag [0 - 1], your input: %d\n", channelNumber + 1, config->target_socket);
-        return_error = EB_ErrorBadParameter;
-    }
-
-    // Global Motion
-    if (config->enable_global_motion != 0 && config->enable_global_motion != 1) {
-        fprintf(config->error_log_file, "Error instance %u: Invalid global motion flag [0 - 1], your input: %d\n", channelNumber + 1, config->target_socket);
-        return_error = EB_ErrorBadParameter;
-    }
-
-    // OBMC
-    if (config->enable_obmc != 0 && config->enable_obmc != 1) {
-        fprintf(config->error_log_file, "Error instance %u: Invalid OBMC flag [0 - 1], your input: %d\n", channelNumber + 1, config->target_socket);
-        return_error = EB_ErrorBadParameter;
-    }
-
-    // Filter Intra prediction
-    if (config->enable_filter_intra != 0 && config->enable_filter_intra != 1) {
-        fprintf(config->error_log_file, "Error instance %u: Invalid Filter Intra flag [0 - 1], your input: %d\n", channelNumber + 1, config->target_socket);
-        return_error = EB_ErrorBadParameter;
-    }
-
-    // HBD mode decision
-    if (config->enable_hbd_mode_decision != 0 && config->enable_hbd_mode_decision != 1 && config->enable_hbd_mode_decision != 2) {
-        fprintf(config->error_log_file, "Error instance %u: Invalid HBD mode decision flag [0 - 2], your input: %d\n", channelNumber + 1, config->target_socket);
-        return_error = EB_ErrorBadParameter;
-    }
-
-
 
     return return_error;
 }

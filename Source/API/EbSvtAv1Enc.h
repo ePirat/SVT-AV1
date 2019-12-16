@@ -26,6 +26,8 @@ extern "C" {
 
 #define MAX_ENC_PRESET                              8
 
+#define DEFAULT                                    -1
+
 #define EB_BUFFERFLAG_EOS           0x00000001  // signals the last packet of the stream
 #define EB_BUFFERFLAG_SHOW_EXT      0x00000002  // signals that the packet contains a show existing frame at the end
 #define EB_BUFFERFLAG_HAS_TD        0x00000004  // signals that the packet contains a TD
@@ -230,6 +232,106 @@ typedef struct EbSvtAv1EncConfiguration
     * Default is 1. */
     EbBool                   enable_global_motion;
 
+    /* Restoration filtering
+    *
+    * Default is -1. */
+    int                   enable_restoration_filtering;
+
+    /* edge based skip angle intra
+    *
+    * Default is -1. */
+    int                      edge_skp_angle_intra;
+
+    /* inter intra compound
+    *
+    * Default is -1. */
+    int                      inter_intra_compound;
+
+    /* fractional search 64
+    *
+    * Default is -1. */
+    int                      fract_search_64;
+
+    /* combine class 12
+    *
+    * Default is -1. */
+    int                      combine_class_12;
+
+    /* motion field motion vector
+    *
+    *  Default is -1. */
+    int                   enable_mfmv;
+    /* redundant block
+    *
+    * Default is -1. */
+    int                   enable_redundant_blk;
+    /* trellis quant coeff optimization
+    *
+    * Default is -1. */
+    int                   enable_trellis;
+    /* spatial sse in full loop
+    *
+    * Default is -1. */
+    int                   spatial_sse_fl;
+    /* subpel
+    *
+    * Default is -1. */
+    int                   enable_subpel;
+    /* over boundry block
+    *
+    * Default is -1. */
+    int                   over_bndry_blk;
+    /* new nearest comb injection
+    *
+    * Default is -1. */
+    int                   new_nearest_comb_inject;
+    /* nx4 4xn parent motion vector injection
+    *
+    * Default is -1. */
+    int                   nx4_4xn_parent_mv_inject;
+    /* prune unipred at me
+    *
+    * Default is -1. */
+    int                   prune_unipred_me;
+    /* prune ref frame for rec partitions
+    *
+    * Default is -1. */
+    int                   prune_ref_rec_part;
+    /* nsq table
+    *
+    * Default is -1. */
+    int                   nsq_table;
+    /* frame end cdf update
+    *
+    * Default is -1. */
+    int                   frame_end_cdf_update;
+
+    /* Predictive Me
+    *
+    * Default is -1. */
+    int                   pred_me;
+
+    /* Bipred 3x3 Injection
+    *
+    * Default is -1. */
+    int                   bipred_3x3_inject;
+
+    /* Compound Mode
+    *
+    * Default is -1. */
+    int                   compound_level;
+
+    /* Chroma mode
+    *
+    * Level                Settings
+    * CHROMA_MODE_0  0     Full chroma search @ MD
+    * CHROMA_MODE_1  1     Fast chroma search @ MD
+    * CHROMA_MODE_2  2     Chroma blind @ MD + CFL @ EP
+    * CHROMA_MODE_3  3     Chroma blind @ MD + no CFL @ EP
+    *
+    * Default is -1 (AUTO) */
+    int                   set_chroma_mode;
+
     /* OBMC
     *
     * Default is 1. */
@@ -238,7 +340,7 @@ typedef struct EbSvtAv1EncConfiguration
     /* RDOQ
     *
     * Default is -1. */
-    int8_t                   enable_rdoq;
+    int                      enable_rdoq;
 
     /* Filter intra prediction
     *

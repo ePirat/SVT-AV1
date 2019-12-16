@@ -32,10 +32,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#define TX_SIZE_EARLY_EXIT          1 // Exit TX size search when all coefficients are zero.
 
+#define ENHANCED_M0_SETTINGS         1 // Updated M0 settings(optimized independent chroma search for all layers, conservative coeff - based NSQ cands reduction, shut coeff - based skip tx size search, warped for all layers, SUB - SAD as ME search method for non - SC only)
 #define MULTI_PASS_PD                1 // Multi-Pass Partitioning Depth (Multi-Pass PD) performs multiple PD stages for the same SB towards 1 final Partitioning Structure. As we go from PDn to PDn + 1, the prediction accuracy of the MD feature(s) increases while the number of block(s) decreases
-
+#define RATE_ESTIMATION_UPDATE       1 // Adding the rate estimation updates used in MD for missing syntax elements
 #define HBD_CLEAN_UP                 1
+
+#define HBD2_COMP                    1 // Inter-Inter compound mode HBD2
+#define HBD2_PME                     1 // Predictive ME (PME) HBD2
+#define HBD2_OBMC                    1 // OBMC semi-lossless for HBD1 & HBD2
 
 #define IFS_8BIT_MD                  1
 
@@ -91,7 +97,7 @@ extern "C" {
 #define GM_OPT                       1 // Perform global motion estimation on a down-sampled version of the input picture
 
 #ifndef NON_AVX512_SUPPORT
-#define NON_AVX512_SUPPORT
+//#define NON_AVX512_SUPPORT
 #endif
 
 #define MR_MODE                           0
@@ -114,7 +120,7 @@ extern "C" {
 #define TWO_PASS_USE_2NDP_ME_IN_1STP      1 // Add a config parameter to the first pass to use the ME settings of the second pass
 
 #define REMOVE_MD_STAGE_1                 1 // Simplified MD Staging; removed md_stage_1
-#define NON_KF_INTRA_TF_FIX               0 // Fix temporal filtering for non-key Intra frames
+#define NON_KF_INTRA_TF_FIX               1 // Fix temporal filtering for non-key Intra frames
 
 #define TWO_PASS_IMPROVEMENT              1 // Tune 2 pass for better Luma by adjusting the reference area and the actions
 //FOR DEBUGGING - Do not remove
@@ -225,8 +231,6 @@ enum {
 #define NSQ_TAB_SIZE                                    6
 #endif
 #endif
-
-#define AUTO_MODE                                 -1
 
 //  Delta QP support
 #define ADD_DELTA_QP_SUPPORT                      1  // Add delta QP support

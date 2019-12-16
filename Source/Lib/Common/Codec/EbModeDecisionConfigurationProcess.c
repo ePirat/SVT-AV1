@@ -2602,8 +2602,7 @@ EbErrorType signal_derivation_mode_decision_config_kernel_oq(
         else
             picture_control_set_ptr->update_cdf = 0;
     else
-    picture_control_set_ptr->update_cdf = (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5) ? 1 : 0;
-
+        picture_control_set_ptr->update_cdf = (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5) ? 1 : 0;
     if(picture_control_set_ptr->update_cdf)
         assert(sequence_control_set_ptr->cdf_mode == 0 && "use cdf_mode 0");
 #if FILTER_INTRA_FLAG
@@ -2625,8 +2624,12 @@ EbErrorType signal_derivation_mode_decision_config_kernel_oq(
         enable_wm = EB_FALSE;
     else
 #if WARP_UPDATE
+#if ENHANCED_M0_SETTINGS
+        enable_wm = (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0 ||
+#else
         enable_wm = (MR_MODE ||
         (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0 && picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
+#endif
             (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5 && picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index == 0)) ? EB_TRUE : EB_FALSE;
 #else
         enable_wm = (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5) || MR_MODE ? EB_TRUE : EB_FALSE;
@@ -3133,26 +3136,30 @@ void* mode_decision_configuration_kernel(void *input_ptr)
                 entropyCodingQp,
                 picture_control_set_ptr->slice_type);
 
-        // Initial Rate Estimatimation of the syntax elements
+        // Initial Rate Estimation of the syntax elements
         av1_estimate_syntax_rate(
             md_rate_estimation_array,
             picture_control_set_ptr->slice_type == I_SLICE ? EB_TRUE : EB_FALSE,
             picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
 #if !FIX_ENABLE_CDF_UPDATE
-        // Initial Rate Estimatimation of the syntax elements
+        // Initial Rate Estimation of the syntax elements
         if (!md_rate_estimation_array->initialized)
             av1_estimate_syntax_rate(
                 md_rate_estimation_array,
                 picture_control_set_ptr->slice_type == I_SLICE ? EB_TRUE : EB_FALSE,
                 picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
 #endif
-        // Initial Rate Estimatimation of the Motion vectors
+        // Initial Rate Estimation of the Motion vectors
         av1_estimate_mv_rate(
             picture_control_set_ptr,
             md_rate_estimation_array,
+#if RATE_ESTIMATION_UPDATE
+            picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
+#else
             &picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc->nmvc);
+#endif
 
-        // Initial Rate Estimatimation of the quantized coefficients
+        // Initial Rate Estimation of the quantized coefficients
         av1_estimate_coefficients_rate(
             md_rate_estimation_array,
             picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
