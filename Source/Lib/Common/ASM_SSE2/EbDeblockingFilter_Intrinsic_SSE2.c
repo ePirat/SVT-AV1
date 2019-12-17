@@ -1506,34 +1506,6 @@ static INLINE void get_limit(const uint8_t *bl, const uint8_t *l,
     *t80_out = _mm_set1_epi16(1 << (bd - 1));
 }
 
-static INLINE void get_limit_dual(
-    const uint8_t *_blimit0, const uint8_t *_limit0, const uint8_t *_thresh0,
-    const uint8_t *_blimit1, const uint8_t *_limit1, const uint8_t *_thresh1,
-    int32_t bd, __m128i *blt_out, __m128i *lt_out, __m128i *thr_out,
-    __m128i *t80_out) {
-    const int32_t shift = bd - 8;
-    const __m128i zero = _mm_setzero_si128();
-
-    __m128i x0 =
-        _mm_unpacklo_epi8(_mm_load_si128((const __m128i *)_blimit0), zero);
-    __m128i x1 =
-        _mm_unpacklo_epi8(_mm_load_si128((const __m128i *)_blimit1), zero);
-    x0 = _mm_unpacklo_epi64(x0, x1);
-    *blt_out = _mm_slli_epi16(x0, shift);
-
-    x0 = _mm_unpacklo_epi8(_mm_load_si128((const __m128i *)_limit0), zero);
-    x1 = _mm_unpacklo_epi8(_mm_load_si128((const __m128i *)_limit1), zero);
-    x0 = _mm_unpacklo_epi64(x0, x1);
-    *lt_out = _mm_slli_epi16(x0, shift);
-
-    x0 = _mm_unpacklo_epi8(_mm_load_si128((const __m128i *)_thresh0), zero);
-    x1 = _mm_unpacklo_epi8(_mm_load_si128((const __m128i *)_thresh1), zero);
-    x0 = _mm_unpacklo_epi64(x0, x1);
-    *thr_out = _mm_slli_epi16(x0, shift);
-
-    *t80_out = _mm_set1_epi16(1 << (bd - 1));
-}
-
 static INLINE void load_highbd_pixel(const uint16_t *s, int32_t size, int32_t pitch,
     __m128i *p, __m128i *q) {
     int32_t i;
