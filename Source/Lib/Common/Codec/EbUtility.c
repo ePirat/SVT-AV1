@@ -1387,13 +1387,7 @@ void depth_scan_all_blks() {
 }
 
 void finish_depth_scan_all_blks() {
-    uint32_t do_print = 0;
-    uint32_t min_size = max_sb >> (max_depth - 1);
-    FILE*    fp       = NULL;
-    if (do_print) FOPEN(fp, "e:\\test\\data.csv", "w");
-
     uint32_t depth_it, sq_it_y, sq_it_x, part_it, nsq_it;
-
     uint32_t depth_scan_idx = 0;
 
     for (depth_it = 0; depth_it < max_depth; depth_it++) {
@@ -1411,19 +1405,7 @@ void finish_depth_scan_all_blks() {
             sq_size == 128 ? MIN(max_part, 7)
                            : sq_size == 8 ? MIN(max_part, 3) : sq_size == 4 ? 1 : max_part;
 
-        if (do_print) {
-            fprintf(fp, "\n\n\n");
-            SVT_LOG("\n\n\n");
-        }
-
         for (sq_it_y = 0; sq_it_y < tot_num_sq; sq_it_y++) {
-            if (do_print) {
-                for (uint32_t i = 0; i < sq_size / min_size; i++) {
-                    fprintf(fp, "\n ");
-                    SVT_LOG("\n ");
-                }
-            }
-
             for (sq_it_x = 0; sq_it_x < tot_num_sq; sq_it_x++) {
                 for (part_it = 0; part_it < max_part_updated; part_it++) {
                     uint32_t tot_num_ns_per_part =
@@ -1437,24 +1419,12 @@ void finish_depth_scan_all_blks() {
                                                      blk_geom_dps[depth_scan_idx].origin_y);
 
                         blk_geom_dps[depth_scan_idx].blkidx_mds = blk_geom_mds[matched].blkidx_mds;
-
-                        if (do_print && part_it == 0) {
-                            fprintf(fp, "%i", blk_geom_dps[depth_scan_idx].blkidx_mds);
-                            SVT_LOG("%i", blk_geom_dps[depth_scan_idx].blkidx_mds);
-
-                            for (uint32_t i = 0; i < sq_size / min_size; i++) {
-                                fprintf(fp, ",");
-                                SVT_LOG(",");
-                            }
-                        }
                         depth_scan_idx++;
                     }
                 }
             }
         }
     }
-
-    if (do_print) fclose(fp);
 }
 
 uint32_t count_total_num_of_active_blks() {
