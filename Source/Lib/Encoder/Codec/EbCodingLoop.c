@@ -1467,8 +1467,7 @@ void perform_intra_coding_loop(PictureControlSet *pcs_ptr, SuperBlock *sb_ptr, u
     EbBool is_16bit = context_ptr->is_16bit;
     uint32_t bit_depth = context_ptr->bit_depth;
     uint8_t is_inter = 0; // set to 0 b/c this is the intra path
-    EbPictureBufferDesc *recon_buffer =
-        is_16bit ? pcs_ptr->recon_picture16bit_ptr : pcs_ptr->recon_picture_ptr;
+    EbPictureBufferDesc *recon_buffer;
     EbPictureBufferDesc *coeff_buffer_sb = sb_ptr->quantized_coeff;
 
 #if TILES_PARALLEL
