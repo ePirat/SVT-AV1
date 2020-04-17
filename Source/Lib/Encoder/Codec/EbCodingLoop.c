@@ -2720,13 +2720,12 @@ EB_EXTERN void av1_encode_pass(SequenceControlSet *scs_ptr, PictureControlSet *p
                                          ->reference_picture_wrapper_ptr->object_ptr)
                                         ->reference_picture;
 
-                                if (is_16bit)
+                                if (is_16bit) {
                                     ref_pic_list0 =
                                         ((EbReferenceObject *)pcs_ptr->parent_pcs_ptr
                                              ->reference_picture_wrapper_ptr->object_ptr)
                                             ->reference_picture16bit;
 
-                                if (is_16bit) {
                                     av1_inter_prediction_16bit_pipeline(
                                         pcs_ptr,
                                         blk_ptr->interp_filters,
