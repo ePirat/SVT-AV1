@@ -2984,9 +2984,9 @@ EB_EXTERN void av1_encode_pass(SequenceControlSet *scs_ptr, PictureControlSet *p
                                     NEIGHBOR_ARRAY_UNIT_TOP_AND_LEFT_ONLY_MASK);
                             }
 
-                            // Update the cb Dc Sign Level Coeff Neighbor Array
                             if (context_ptr->blk_geom->has_uv && uv_pass)
                             {
+                                // Update the cb Dc Sign Level Coeff Neighbor Array
                                 uint8_t dcSignLevelCoeff = (uint8_t)blk_ptr->quantized_dc[1][context_ptr->txb_itr];
                                 neighbor_array_unit_mode_write(
                                     pcs_ptr->ep_cb_dc_sign_level_coeff_neighbor_array[tile_idx],
@@ -2998,9 +2998,9 @@ EB_EXTERN void av1_encode_pass(SequenceControlSet *scs_ptr, PictureControlSet *p
                                     NEIGHBOR_ARRAY_UNIT_TOP_AND_LEFT_ONLY_MASK);
                             }
 
-                            // Update the cr DC Sign Level Coeff Neighbor Array
                             if (context_ptr->blk_geom->has_uv && uv_pass)
                             {
+                                // Update the cr DC Sign Level Coeff Neighbor Array
                                 uint8_t dcSignLevelCoeff = (uint8_t)blk_ptr->quantized_dc[2][context_ptr->txb_itr];
                                 neighbor_array_unit_mode_write(
                                     pcs_ptr->ep_cr_dc_sign_level_coeff_neighbor_array[tile_idx],
