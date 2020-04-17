@@ -2996,12 +2996,9 @@ EB_EXTERN void av1_encode_pass(SequenceControlSet *scs_ptr, PictureControlSet *p
                                     context_ptr->blk_geom->tx_width_uv[blk_ptr->tx_depth][context_ptr->txb_itr],
                                     context_ptr->blk_geom->tx_height_uv[blk_ptr->tx_depth][context_ptr->txb_itr],
                                     NEIGHBOR_ARRAY_UNIT_TOP_AND_LEFT_ONLY_MASK);
-                            }
 
-                            if (context_ptr->blk_geom->has_uv && uv_pass)
-                            {
                                 // Update the cr DC Sign Level Coeff Neighbor Array
-                                uint8_t dcSignLevelCoeff = (uint8_t)blk_ptr->quantized_dc[2][context_ptr->txb_itr];
+                                dcSignLevelCoeff = (uint8_t)blk_ptr->quantized_dc[2][context_ptr->txb_itr];
                                 neighbor_array_unit_mode_write(
                                     pcs_ptr->ep_cr_dc_sign_level_coeff_neighbor_array[tile_idx],
                                     (uint8_t*)&dcSignLevelCoeff,
