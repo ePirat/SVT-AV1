@@ -220,11 +220,10 @@ const CodedBlockStats* get_coded_blk_stats(const uint32_t cu_idx) {
   *  the log2f of a 64-bit number
   *****************************************/
 inline uint64_t log2f_64(uint64_t x) {
-    uint64_t y;
     int64_t  n = 64, c = 32;
 
     do {
-        y = x >> c;
+        uint64_t y = x >> c;
         if (y > 0) {
             n -= c;
             x = y;
@@ -1387,10 +1386,9 @@ void depth_scan_all_blks() {
 }
 
 void finish_depth_scan_all_blks() {
-    uint32_t depth_it, sq_it_y, sq_it_x, part_it, nsq_it;
     uint32_t depth_scan_idx = 0;
 
-    for (depth_it = 0; depth_it < max_depth; depth_it++) {
+    for (uint32_t depth_it = 0; depth_it < max_depth; depth_it++) {
         uint32_t tot_num_sq = 1 << depth_it;
         uint32_t sq_size =
             depth_it == 0
@@ -1405,13 +1403,13 @@ void finish_depth_scan_all_blks() {
             sq_size == 128 ? MIN(max_part, 7)
                            : sq_size == 8 ? MIN(max_part, 3) : sq_size == 4 ? 1 : max_part;
 
-        for (sq_it_y = 0; sq_it_y < tot_num_sq; sq_it_y++) {
-            for (sq_it_x = 0; sq_it_x < tot_num_sq; sq_it_x++) {
-                for (part_it = 0; part_it < max_part_updated; part_it++) {
+        for (uint32_t sq_it_y = 0; sq_it_y < tot_num_sq; sq_it_y++) {
+            for (uint32_t sq_it_x = 0; sq_it_x < tot_num_sq; sq_it_x++) {
+                for (uint32_t part_it = 0; part_it < max_part_updated; part_it++) {
                     uint32_t tot_num_ns_per_part =
                         part_it < 1 ? 1 : part_it < 3 ? 2 : part_it < 7 ? 3 : 4;
 
-                    for (nsq_it = 0; nsq_it < tot_num_ns_per_part; nsq_it++) {
+                    for (uint32_t nsq_it = 0; nsq_it < tot_num_ns_per_part; nsq_it++) {
                         uint32_t matched =
                             search_matching_from_mds(blk_geom_dps[depth_scan_idx].depth,
                                                      blk_geom_dps[depth_scan_idx].shape,
