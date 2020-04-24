@@ -163,35 +163,28 @@ EbErrorType eb_destroy_thread(EbHandle thread_handle) {
 /***************************************
  * eb_create_semaphore
  ***************************************/
-EbHandle eb_create_semaphore(uint32_t initial_count, uint32_t max_count) {
-#ifdef _WIN32
-    EbHandle semaphore_handle = NULL;
-    (void)max_count;
+EbHandle eb_create_semaphore(uint32_t initial_count, uint32_t max_count) 
+{
+    EbHandle semaphore_handle;
 
+#if defined(_WIN32)
     semaphore_handle = (EbHandle)CreateSemaphore(NULL, // default security attributes
                                                  initial_count, // initial semaphore count
                                                  max_count, // maximum semaphore count
                                                  NULL); // semaphore is not named
-    return semaphore_handle;
-
 #elif defined(__APPLE__)
-    EbHandle semaphore_handle = NULL;
     UNUSED(max_count);
-
     semaphore_handle = (EbHandle)dispatch_semaphore_create(initial_count);
-    return semaphore_handle;
-
 #else
-    EbHandle semaphore_handle = NULL;
-    (void)max_count;
+    UNUSED(max_count);
 
     semaphore_handle = (sem_t *)malloc(sizeof(sem_t));
     sem_init((sem_t *)semaphore_handle, // semaphore handle
              0, // shared semaphore (not local)
              initial_count); // initial count
-    return semaphore_handle;
+#endif
 
-#endif // _WIN32
+    return semaphore_handle;
 }
 
 /***************************************
