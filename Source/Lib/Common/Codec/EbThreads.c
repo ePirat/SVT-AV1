@@ -190,8 +190,9 @@ EbHandle eb_create_semaphore(uint32_t initial_count, uint32_t max_count)
 /***************************************
  * eb_post_semaphore
  ***************************************/
-EbErrorType eb_post_semaphore(EbHandle semaphore_handle) {
-    EbErrorType return_error = EB_ErrorNone;
+EbErrorType eb_post_semaphore(EbHandle semaphore_handle)
+{
+    EbErrorType return_error;
 
 #ifdef _WIN32
     return_error = !ReleaseSemaphore(semaphore_handle, // semaphore handle
@@ -201,6 +202,7 @@ EbErrorType eb_post_semaphore(EbHandle semaphore_handle) {
                        : EB_ErrorNone;
 #elif defined(__APPLE__)
     dispatch_semaphore_signal((dispatch_semaphore_t)semaphore_handle);
+    return_error = EB_ErrorNone;
 #else
     return_error =
         sem_post((sem_t *)semaphore_handle) ? EB_ErrorSemaphoreUnresponsive : EB_ErrorNone;
@@ -212,8 +214,9 @@ EbErrorType eb_post_semaphore(EbHandle semaphore_handle) {
 /***************************************
  * eb_block_on_semaphore
  ***************************************/
-EbErrorType eb_block_on_semaphore(EbHandle semaphore_handle) {
-    EbErrorType return_error = EB_ErrorNone;
+EbErrorType eb_block_on_semaphore(EbHandle semaphore_handle)
+{
+    EbErrorType return_error;
 
 #ifdef _WIN32
     return_error = WaitForSingleObject((HANDLE)semaphore_handle, INFINITE)
@@ -224,7 +227,6 @@ EbErrorType eb_block_on_semaphore(EbHandle semaphore_handle) {
         dispatch_semaphore_wait((dispatch_semaphore_t)semaphore_handle, DISPATCH_TIME_FOREVER)
             ? EB_ErrorSemaphoreUnresponsive
             : EB_ErrorNone;
-
 #else
     return_error =
         sem_wait((sem_t *)semaphore_handle) ? EB_ErrorSemaphoreUnresponsive : EB_ErrorNone;
@@ -236,14 +238,16 @@ EbErrorType eb_block_on_semaphore(EbHandle semaphore_handle) {
 /***************************************
  * eb_destroy_semaphore
  ***************************************/
-EbErrorType eb_destroy_semaphore(EbHandle semaphore_handle) {
-    EbErrorType return_error = EB_ErrorNone;
+EbErrorType eb_destroy_semaphore(EbHandle semaphore_handle)
+{
+    EbErrorType return_error;
 
 #ifdef _WIN32
     return_error =
         !CloseHandle((HANDLE)semaphore_handle) ? EB_ErrorDestroySemaphoreFailed : EB_ErrorNone;
 #elif defined(__APPLE__)
     dispatch_release((dispatch_semaphore_t)semaphore_handle);
+    return_error = EB_ErrorNone;
 #else
     return_error =
         sem_destroy((sem_t *)semaphore_handle) ? EB_ErrorDestroySemaphoreFailed : EB_ErrorNone;
@@ -255,8 +259,9 @@ EbErrorType eb_destroy_semaphore(EbHandle semaphore_handle) {
 /***************************************
  * eb_create_mutex
  ***************************************/
-EbHandle eb_create_mutex(void) {
-    EbHandle mutex_handle = NULL;
+EbHandle eb_create_mutex(void)
+{
+    EbHandle mutex_handle;
 
 #ifdef _WIN32
     mutex_handle = (EbHandle)CreateMutex(NULL, // default security attributes
@@ -279,8 +284,9 @@ EbHandle eb_create_mutex(void) {
 /***************************************
  * EbPostMutex
  ***************************************/
-EbErrorType eb_release_mutex(EbHandle mutex_handle) {
-    EbErrorType return_error = EB_ErrorNone;
+EbErrorType eb_release_mutex(EbHandle mutex_handle)
+{
+    EbErrorType return_error;
 
 #ifdef _WIN32
     return_error = !ReleaseMutex((HANDLE)mutex_handle) ? EB_ErrorCreateMutexFailed : EB_ErrorNone;
@@ -295,8 +301,9 @@ EbErrorType eb_release_mutex(EbHandle mutex_handle) {
 /***************************************
  * eb_block_on_mutex
  ***************************************/
-EbErrorType eb_block_on_mutex(EbHandle mutex_handle) {
-    EbErrorType return_error = EB_ErrorNone;
+EbErrorType eb_block_on_mutex(EbHandle mutex_handle)
+{
+    EbErrorType return_error;
 
 #ifdef _WIN32
     return_error = WaitForSingleObject((HANDLE)mutex_handle, INFINITE) ? EB_ErrorMutexUnresponsive
@@ -312,8 +319,9 @@ EbErrorType eb_block_on_mutex(EbHandle mutex_handle) {
 /***************************************
  * eb_destroy_mutex
  ***************************************/
-EbErrorType eb_destroy_mutex(EbHandle mutex_handle) {
-    EbErrorType return_error = EB_ErrorNone;
+EbErrorType eb_destroy_mutex(EbHandle mutex_handle)
+{
+    EbErrorType return_error;
 
 #ifdef _WIN32
     return_error = CloseHandle((HANDLE)mutex_handle) ? EB_ErrorDestroyMutexFailed : EB_ErrorNone;
