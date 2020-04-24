@@ -519,8 +519,9 @@ finish_ransac:
     free(corners2);
     free(image1_coord);
     free(current_motion.inlier_indices);
-    if (motions){
-        for (i = 0; i < num_desired_motions; ++i) { free(motions[i].inlier_indices); }
+    if (motions) {
+        for (i = 0; i < num_desired_motions; ++i)
+            free(motions[i].inlier_indices);
         free(motions);
     }
 
