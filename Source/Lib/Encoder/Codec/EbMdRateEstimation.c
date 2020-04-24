@@ -847,7 +847,7 @@ void update_stats(PictureControlSet *pcs_ptr, BlkStruct *blk_ptr, int mi_row, in
 
     const BlockGeom *blk_geom = get_blk_geom_mds(blk_ptr->mds_idx);
     BlockSize        bsize    = blk_geom->bsize;
-    assert(bsize <BlockSizeS_ALL);
+    assert(bsize < BlockSizeS_ALL);
     FRAME_CONTEXT *  fc       = xd->tile_ctx;
     const int        seg_ref_active =
         pcs_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.segmentation_enabled &&
@@ -874,7 +874,8 @@ void update_stats(PictureControlSet *pcs_ptr, BlkStruct *blk_ptr, int mi_row, in
     if (av1_allow_intrabc(&pcs_ptr->parent_pcs_ptr->frm_hdr, pcs_ptr->parent_pcs_ptr->slice_type))
         update_cdf(fc->intrabc_cdf, is_intrabc_block(&mbmi->block_mi), 2);
 
-    if (frame_is_intra_only(pcs_ptr->parent_pcs_ptr) || mbmi->block_mi.skip_mode) return;
+    if (frame_is_intra_only(pcs_ptr->parent_pcs_ptr) || mbmi->block_mi.skip_mode)
+        return;
     const int inter_block = is_inter_block(&mbmi->block_mi);
     if (!seg_ref_active) {
         update_cdf(fc->intra_inter_cdf[av1_get_intra_inter_context(xd)], inter_block, 2);
@@ -1045,7 +1046,8 @@ void update_stats(PictureControlSet *pcs_ptr, BlkStruct *blk_ptr, int mi_row, in
                 if (xd->ref_mv_count[ref_frame_type] > idx + 1) {
                     const uint8_t drl_ctx = av1_drl_ctx(xd->final_ref_mv_stack, idx);
                     update_cdf(fc->drl_cdf[drl_ctx], mbmi->block_mi.ref_mv_idx != idx, 2);
-                    if (mbmi->block_mi.ref_mv_idx == idx) break;
+                    if (mbmi->block_mi.ref_mv_idx == idx)
+                        break;
                 }
             }
         }
@@ -1056,7 +1058,8 @@ void update_stats(PictureControlSet *pcs_ptr, BlkStruct *blk_ptr, int mi_row, in
                 if (xd->ref_mv_count[ref_frame_type] > idx + 1) {
                     const uint8_t drl_ctx = av1_drl_ctx(xd->final_ref_mv_stack, idx);
                     update_cdf(fc->drl_cdf[drl_ctx], mbmi->block_mi.ref_mv_idx != idx - 1, 2);
-                    if (mbmi->block_mi.ref_mv_idx == idx - 1) break;
+                    if (mbmi->block_mi.ref_mv_idx == idx - 1)
+                        break;
                 }
             }
         }
@@ -1102,7 +1105,7 @@ void update_part_stats(PictureControlSet *pcs_ptr, BlkStruct *blk_ptr, int mi_ro
     const BlockGeom *       blk_geom = get_blk_geom_mds(blk_ptr->mds_idx);
     BlockSize               bsize    = blk_geom->bsize;
     FRAME_CONTEXT *         fc       = xd->tile_ctx;
-    assert(bsize <BlockSizeS_ALL);
+    assert(bsize < BlockSizeS_ALL);
 
     if (mi_row >= cm->mi_rows || mi_col >= cm->mi_cols) return;
     const int hbs               = mi_size_wide[bsize] / 2;
