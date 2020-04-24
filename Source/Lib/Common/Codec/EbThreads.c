@@ -204,7 +204,7 @@ EbErrorType eb_post_semaphore(EbHandle semaphore_handle) {
 #else
     return_error =
         sem_post((sem_t *)semaphore_handle) ? EB_ErrorSemaphoreUnresponsive : EB_ErrorNone;
-#endif // _WIN32
+#endif
 
     return return_error;
 }
@@ -228,7 +228,7 @@ EbErrorType eb_block_on_semaphore(EbHandle semaphore_handle) {
 #else
     return_error =
         sem_wait((sem_t *)semaphore_handle) ? EB_ErrorSemaphoreUnresponsive : EB_ErrorNone;
-#endif // _WIN32
+#endif
 
     return return_error;
 }
@@ -248,7 +248,7 @@ EbErrorType eb_destroy_semaphore(EbHandle semaphore_handle) {
     return_error =
         sem_destroy((sem_t *)semaphore_handle) ? EB_ErrorDestroySemaphoreFailed : EB_ErrorNone;
     free(semaphore_handle);
-#endif // _WIN32
+#endif
 
     return return_error;
 }
@@ -271,7 +271,7 @@ EbHandle eb_create_mutex(void) {
         pthread_mutex_init((pthread_mutex_t *)mutex_handle,
                            NULL); // default attributes
     }
-#endif // _WIN32
+#endif
 
     return mutex_handle;
 }
@@ -287,7 +287,7 @@ EbErrorType eb_release_mutex(EbHandle mutex_handle) {
 #else
     return_error = pthread_mutex_unlock((pthread_mutex_t *)mutex_handle) ? EB_ErrorCreateMutexFailed
                                                                          : EB_ErrorNone;
-#endif // _WIN32
+#endif
 
     return return_error;
 }
@@ -304,7 +304,7 @@ EbErrorType eb_block_on_mutex(EbHandle mutex_handle) {
 #else
     return_error = pthread_mutex_lock((pthread_mutex_t *)mutex_handle) ? EB_ErrorMutexUnresponsive
                                                                        : EB_ErrorNone;
-#endif // _WIN32
+#endif
 
     return return_error;
 }
@@ -322,7 +322,7 @@ EbErrorType eb_destroy_mutex(EbHandle mutex_handle) {
                        ? EB_ErrorDestroyMutexFailed
                        : EB_ErrorNone;
     free(mutex_handle);
-#endif // _WIN32
+#endif
 
     return return_error;
 }
