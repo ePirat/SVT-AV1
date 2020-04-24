@@ -163,7 +163,7 @@ EbErrorType eb_destroy_thread(EbHandle thread_handle) {
 /***************************************
  * eb_create_semaphore
  ***************************************/
-EbHandle eb_create_semaphore(uint32_t initial_count, uint32_t max_count) 
+EbHandle eb_create_semaphore(uint32_t initial_count, uint32_t max_count)
 {
     EbHandle semaphore_handle;
 
