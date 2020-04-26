@@ -4,11 +4,7 @@
 #
 
 # C_DEFAULT Directory CMakeLists.txt
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
-    set (X86 TRUE)
-else ()
-    set (X86 FALSE)
-endif ()
+
 if(X86)
 # Include Encoder Subdirectories
 include_directories(../../../API

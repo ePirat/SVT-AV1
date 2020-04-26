@@ -18,11 +18,6 @@ macro(test_apply_compiler_flags)
         message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: ${CMAKE_C_FLAGS}")
     endif()
 endmacro()
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
-    set (X86 TRUE)
-else ()
-    set (X86 FALSE)
-endif ()
 
 add_library(common_lib INTERFACE)
 
