@@ -15,21 +15,21 @@ jobs:
       matrix:
         sanitizer: ['address', 'memory', 'thread']
         include:
-          - sanitizer: 'address'
+          - sanitizer: address
             env:
               ASAN_OPTIONS: detect_leaks=1
               CFLAGS: -fsanitize=address
               CXXFLAGS: -fsanitize=address
               LDFLAGS: -fsanitize=address
 
-          - sanitizer: 'memory'
+          - sanitizer: memory
             env:
               CFLAGS: -fsanitize=memory -fno-omit-frame-pointer
               CXXFLAGS: -fsanitize=memory -fno-omit-frame-pointer
               LDFLAGS: -fsanitize=memory
             svt-args: '--asm 0'
 
-          - sanitizer: 'thread'
+          - sanitizer: thread
             env:
               CFLAGS: -fsanitize=thread
               CXXFLAGS: -fsanitize=thread
