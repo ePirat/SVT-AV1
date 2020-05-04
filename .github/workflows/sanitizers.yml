@@ -57,5 +57,4 @@ jobs:
         tar xzf video.tar.gz
 
     - name: Run Encoder
-      run: ./Bin/Debug/SvtAv1EncApp -i Chimera-Aerial_480x264_2997fps_10bit_420_150frames.y4m \
-             ${{ matrix.svt-args }} -n 120 --preset 8 -b output.ivf
+      run: ./Bin/Debug/SvtAv1EncApp -i Chimera-Aerial_480x264_2997fps_10bit_420_150frames.y4m ${{ matrix.svt-args }} -n 120 --preset 8 -b output.ivf
