@@ -827,6 +827,7 @@ void eb_av1_iadst8_new(const int32_t *input, int32_t *output, int8_t cos_bit,
     assert(output != input);
     const int32_t *cospi = cospi_arr(cos_bit);
 
+    // cppcheck-suppress unreadVariable
     int32_t  stage = 0;
     int32_t *bf0, *bf1;
     int32_t  step[8];
