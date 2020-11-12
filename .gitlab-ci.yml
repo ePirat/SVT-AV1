@@ -150,8 +150,8 @@ valgrind:
   extends: .tests
   allow_failure: true
   script:
-    # --leak-check=full --show-leak-kinds=all makes the log very huge and takes around 16 minutes
-    - valgrind --error-exitcode=1 --error-limit=no --track-origins=yes --suppressions=/usr/lib/valgrind/debian.supp -- ./Bin/Release/SvtAv1EncApp --preset 4 -i akiyo_cif.y4m -n 20 -b test1.ivf
+    # --error-limit=no --leak-check=full --show-leak-kinds=all makes the log very huge and takes around 16 minutes
+    - valgrind --error-exitcode=1 --track-origins=yes --suppressions=/usr/lib/valgrind/debian.supp -- ./Bin/Release/SvtAv1EncApp --preset 4 -i akiyo_cif.y4m -n 20 -b test1.ivf
 
 .sanitizer compile:
   extends: .linux-compiler-base
