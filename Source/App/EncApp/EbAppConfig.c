@@ -1389,7 +1389,7 @@ ConfigEntry config_entry[] = {
  * Constructor
  **********************************/
 EbConfig * svt_config_ctor(EncodePass pass) {
-    EbConfig *config_ptr = (EbConfig *)calloc(1, sizeof(EbConfig));
+    EbConfig *config_ptr = (EbConfig *)calloc(1, sizeof(*config_ptr));
     if (!config_ptr)
         return NULL;
 
