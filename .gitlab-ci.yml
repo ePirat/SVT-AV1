@@ -105,6 +105,21 @@ gcc 4:
     CC: gcc-4.8
     CXX: g++-4.8
 
+valgrind compile:
+  extends: .linux-compiler-base
+  image: registry.gitlab.com/aomediacodec/aom-testing/ubuntu1804
+  variables:
+    MY_CFLAGS: -Wno-error -g
+    MY_CXXFLAGS: -Wno-error -g
+    LDFLAGS: -static -static-libgcc
+    MY_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=valgrind
+    CMAKE_BUILD_TYPE: Debug
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - valgrind/
+
 gcc 7:
   extends: .linux-compiler-base
   variables:
@@ -148,10 +163,11 @@ gcc 10:
 
 valgrind:
   extends: .tests
+  image: registry.gitlab.com/aomediacodec/aom-testing/ubuntu1804
   allow_failure: true
   script:
     # --error-limit=no --leak-check=full --show-leak-kinds=all makes the log very huge and takes around 16 minutes
-    - valgrind --error-exitcode=1 --track-origins=yes --suppressions=/usr/lib/valgrind/debian.supp -- ./Bin/Release/SvtAv1EncApp --preset 4 -i akiyo_cif.y4m -n 20 -b test1.ivf
+    - valgrind --error-exitcode=1 --track-origins=yes --suppressions=/usr/lib/valgrind/debian.supp -- ./valgrind/SvtAv1EncApp --preset 4 -i akiyo_cif.y4m -n 20 -b test1.ivf
 
 .sanitizer compile:
   extends: .linux-compiler-base
