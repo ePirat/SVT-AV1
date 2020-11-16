@@ -106,16 +106,31 @@ gcc 10:
   variables:
     CC: gcc-10
     CXX: g++-10
-    EXTRA_CFLAGS: -Wno-error -g
-    EXTRA_CXXFLAGS: -Wno-error -g
     LDFLAGS: -static -static-libgcc -static-libstdc++
-    EXTRA_CMAKE_FLAGS: -DBUILD_TESTING=ON
     GIT_DEPTH: 0
   artifacts:
     untracked: false
     expire_in: 30 days
     paths:
-      - Bin/Release
+      - Bin/Release/SvtAv1EncApp
+      - Bin/Release/SvtAv1DecApp
+
+gcc 10 test building:
+  extends: .linux-compiler-base
+  variables:
+    CC: gcc-10
+    CXX: g++-10
+    EXTRA_CFLAGS: -Wno-error -g
+    EXTRA_CXXFLAGS: -Wno-error -g
+    LDFLAGS: -static -static-libgcc -static-libstdc++
+    EXTRA_CMAKE_FLAGS: -DBUILD_TESTING=ON -DBUILD_APPS=OFF
+  artifacts:
+    untracked: false
+    expire_in: 1 day
+    paths:
+      - Bin/Release/SvtAv1UnitTests
+      - Bin/Release/SvtAv1ApiTests
+      - Bin/Release/SvtAv1E2ETests
 
 .tests:
   stage: test
