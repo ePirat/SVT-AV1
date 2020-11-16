@@ -35,8 +35,8 @@ cppcheck:
   stage: compile
   image: registry.gitlab.com/aomediacodec/aom-testing/ubuntu2004
   variables:
-    CFLAGS: -Werror -Wshadow $MY_CFLAGS
-    CXXFLAGS: -Werror -Wshadow $MY_CXXFLAGS
+    CFLAGS: -Werror -Wshadow $EXTRA_CFLAGS
+    CXXFLAGS: -Werror -Wshadow $EXTRA_CXXFLAGS
     CCACHE_DIR: $CI_PROJECT_DIR/.ccache
   cache:
     key: ${CI_JOB_NAME}
@@ -45,7 +45,7 @@ cppcheck:
     policy: pull-push
   script:
     - ccache -s
-    - eval cmake -GNinja -B Build -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:=Release} -DBUILD_SHARED_LIBS=OFF $MY_CMAKE_FLAGS
+    - eval cmake -GNinja -B Build -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:=Release} -DBUILD_SHARED_LIBS=OFF $EXTRA_CMAKE_FLAGS
     - cmake --build Build --config $CMAKE_BUILD_TYPE --target install
     - ccache -s
 
@@ -72,10 +72,10 @@ valgrind compile:
   extends: .linux-compiler-base
   image: registry.gitlab.com/aomediacodec/aom-testing/ubuntu1804
   variables:
-    MY_CFLAGS: -Wno-error -g
-    MY_CXXFLAGS: -Wno-error -g
+    EXTRA_CFLAGS: -Wno-error -g
+    EXTRA_CXXFLAGS: -Wno-error -g
     LDFLAGS: -static -static-libgcc
-    MY_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=valgrind
+    EXTRA_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=valgrind
     CMAKE_BUILD_TYPE: Debug
   artifacts:
     untracked: false
@@ -106,10 +106,10 @@ gcc 10:
   variables:
     CC: gcc-10
     CXX: g++-10
-    MY_CFLAGS: -Wno-error -g
-    MY_CXXFLAGS: -Wno-error -g
+    EXTRA_CFLAGS: -Wno-error -g
+    EXTRA_CXXFLAGS: -Wno-error -g
     LDFLAGS: -static -static-libgcc -static-libstdc++
-    MY_CMAKE_FLAGS: -DBUILD_TESTING=ON
+    EXTRA_CMAKE_FLAGS: -DBUILD_TESTING=ON
     GIT_DEPTH: 0
   artifacts:
     untracked: false
@@ -149,26 +149,26 @@ valgrind:
 sanitizer address:
   extends: .sanitizer compile
   variables:
-    MY_CFLAGS: -fsanitize=address
-    MY_CXXFLAGS: -fsanitize=address
+    EXTRA_CFLAGS: -fsanitize=address
+    EXTRA_CXXFLAGS: -fsanitize=address
     LDFLAGS: -fsanitize=address
-    MY_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=address
+    EXTRA_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=address
 
 sanitizer memory:
   extends: .sanitizer compile
   variables:
-    MY_CFLAGS: -fsanitize=memory -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
-    MY_CXXFLAGS: -fsanitize=memory -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
+    EXTRA_CFLAGS: -fsanitize=memory -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
+    EXTRA_CXXFLAGS: -fsanitize=memory -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
     LDFLAGS: -fsanitize=memory -fsanitize-memory-track-origins
-    MY_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=memory
+    EXTRA_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=memory
 
 sanitizer thread:
   extends: .sanitizer compile
   variables:
-    MY_CFLAGS: -fsanitize=thread
-    MY_CXXFLAGS: -fsanitize=thread
+    EXTRA_CFLAGS: -fsanitize=thread
+    EXTRA_CXXFLAGS: -fsanitize=thread
     LDFLAGS: -fsanitize=thread
-    MY_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=thread
+    EXTRA_CMAKE_FLAGS: -DCMAKE_OUTPUT_DIRECTORY=thread
 
 .sanitizer test:
   extends: .tests
