@@ -46,7 +46,7 @@ cppcheck:
   script:
     - ccache -s
     - eval cmake -GNinja -B Build -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:=Release} -DBUILD_SHARED_LIBS=OFF $MY_CMAKE_FLAGS
-    - cmake --build Build --parallel 4 --config $CMAKE_BUILD_TYPE --target install
+    - cmake --build Build --config $CMAKE_BUILD_TYPE --target install
     - ccache -s
 
 clang 6:
